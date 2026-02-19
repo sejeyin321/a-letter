@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>A Letter 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Playfair+Display&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --accent:#ff4d6d;
+  --light-bg:#fff0f6;
+  --dark-bg:#111;
+}
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--light-bg);
+  transition:0.4s;
+  overflow-x:hidden;
+}
+
+body.dark{
+  background:var(--dark-bg);
+  color:white;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  font-size:42px;
+  font-weight:bold;
+  color:var(--accent);
+}
+
+nav{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-bottom:20px;
+}
+
+nav button{
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+}
+
+.controls{
+  position:fixed;
+  top:15px;
+  right:15px;
+  display:flex;
+  gap:10px;
+}
+
+.toggle{
+  padding:6px 12px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.page{
+  display:none;
+  max-width:750px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.9);
+  padding:25px;
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+
+body.dark .card{
+  background:rgba(40,40,40,0.9);
+}
+
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button.send{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:var(--accent);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.envelope{
+  padding:15px;
+  margin:15px 0;
+  border-radius:15px;
+  cursor:pointer;
+  transition:0.3s;
+  color:white;
+}
+
+.envelope:hover{
+  transform:scale(1.03);
+}
+
+.love { background:linear-gradient(135deg,#ff758c,#ff7eb3); }
+.sad { background:linear-gradient(135deg,#667eea,#764ba2); }
+.happy { background:linear-gradient(135deg,#f6d365,#fda085); }
+.calm { background:linear-gradient(135deg,#89f7fe,#66a6ff); }
+
+.inside{
+  display:none;
+  margin-top:10px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  color:black;
+}
+
+/* HEARTS ANIMATION */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:20px;
+  animation: floatUp 6s linear infinite;
+  opacity:0.7;
+}
+
+@keyframes floatUp{
+  from{ transform:translateY(0); }
+  to{ transform:translateY(-110vh); }
+}
+
+/* RAIN ANIMATION */
+.raindrop{
+  position:fixed;
+  top:-20px;
+  width:2px;
+  height:15px;
+  background:#a0c4ff;
+  animation: rainFall 1s linear infinite;
+  opacity:0.5;
+}
+
+@keyframes rainFall{
+  to{ transform:translateY(110vh); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="controls">
+  <button class="toggle" onclick="toggleDark()">🌙 Dark</button>
+  <button class="toggle" onclick="startHearts()">💕 Love Hearts</button>
+  <button class="toggle" onclick="startRain()">🌧️ Rain</button>
+  <button class="toggle" onclick="clearEffects()">❌ Clear Effects</button>
+</div>
+
+<header>A Letter 💌</header>
+
+<nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('submit')">Submit</button>
+  <button onclick="showPage('browse')">Browse</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page">
+  <div class="card">
+    <h2>Welcome to A Letter 💌</h2>
+    <p>
+      This is a digital letter app where you can send and browse messages with moods, fonts, and Spotify tracks.  
+      Every letter is like opening a small world. Choose your mood, font, and song. Send a meaningful message.
+    </p>
+    <p>
+      When someone opens your envelope, the Spotify track plays in the background. After sending, your form resets for a new letter.  
+      Browse other letters, click envelopes, and enjoy aesthetic animations like hearts or rain depending on the mood.
+    </p>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div id="submit" class="page">
+  <div class="card">
+    <h3>Send a Letter</h3>
+    <input id="to" placeholder="To">
+    <input id="from" placeholder="From">
+    <textarea id="message" placeholder="Your message"></textarea>
+    <input id="spotify" placeholder="Spotify Track Link">
+    <select id="fontChoice">
+      <option value="Poppins">Default</option>
+      <option value="Playfair Display">Elegant</option>
+      <option value="Patrick Hand">Handwritten</option>
+    </select>
+    <select id="mood">
+      <option value="love">Love 💕</option>
+      <option value="sad">Sad 🌧️</option>
+      <option value="happy">Happy ☀️</option>
+      <option value="calm">Calm 🌊</option>
+    </select>
+    <button class="send" onclick="sendLetter()">Send 💖</button>
+  </div>
+</div>
+
+<!-- BROWSE -->
+<div id="browse" class="page">
+  <div class="card">
+    <h3>Browse Letters</h3>
+    <input id="searchInput" placeholder="Search by recipient name..." onkeyup="filterLetters()">
+    <div id="letters"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allLetters = [];
+
+window.sendLetter = async function(){
+  const to = document.getElementById("to").value;
+  const from = document.getElementById("from").value;
+  const message = document.getElementById("message").value;
+  const spotify = document.getElementById("spotify").value;
+  const font = document.getElementById("fontChoice").value;
+  const mood = document.getElementById("mood").value;
+
+  if(!to || !from || !message) return alert("Fill everything!");
+
+  await addDoc(collection(db,"letters"),{
+    to, from, message, spotify, font, mood
+  });
+
+  // Reset form
+  document.getElementById("to").value="";
+  document.getElementById("from").value="";
+  document.getElementById("message").value="";
+  document.getElementById("spotify").value="";
+};
+
+onSnapshot(collection(db,"letters"), snapshot=>{
+  allLetters = [];
+  snapshot.forEach(doc=>{
+    allLetters.push(doc.data());
+  });
+  displayLetters(allLetters);
+});
+
+function displayLetters(letterArray){
+  const lettersDiv = document.getElementById("letters");
+  lettersDiv.innerHTML = "";
+
+  letterArray.forEach(data=>{
+    const div = document.createElement("div");
+    div.className = "envelope " + data.mood;
+    div.style.fontFamily = data.font;
+
+    div.innerHTML = `
+      <strong>To: ${data.to}</strong><br>
+      From: ${data.from}
+      <div class="inside">
+        ${data.message}
+        ${data.spotify ? `<br><br>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${getTrackID(data.spotify)}?autoplay=1" width="100%" height="80" frameborder="0" allow="autoplay; encrypted-media"></iframe>` : ""}
+      </div>
+    `;
+
+    div.onclick = ()=>{
+      const inside = div.querySelector(".inside");
+      inside.style.display = inside.style.display==="block"?"none":"block";
+    };
+
+    lettersDiv.appendChild(div);
+  });
+}
+
+function getTrackID(link){
+  return link.split("track/")[1]?.split("?")[0] || "";
+}
+
+function filterLetters(){
+  const searchValue = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = allLetters.filter(letter => letter.to.toLowerCase().includes(searchValue));
+  displayLetters(filtered);
+}
+</script>
+
+<script>
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+showPage("home");
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+// Effects (hearts and rain)
+let heartInterval, rainInterval;
+function startHearts(){
+  clearEffects();
+  heartInterval=setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerText="💖";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.fontSize=(Math.random()*20+15)+"px";
+    heart.style.animationDuration=(Math.random()*3+3)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+  },300);
+}
+
+function startRain(){
+  clearEffects();
+  rainInterval=setInterval(()=>{
+    const drop=document.createElement("div");
+    drop.className="raindrop";
+    drop.style.left=Math.random()*100+"vw";
+    drop.style.animationDuration=(Math.random()*0.5+0.5)+"s";
+    document.body.appendChild(drop);
+    setTimeout(()=>drop.remove(),1000);
+  },100);
+}
+
+function clearEffects(){
+  clearInterval(heartInterval);
+  clearInterval(rainInterval);
+}
+</script>
+
+</body>
+</html>
